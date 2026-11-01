@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+*.zip
+
+# Environment & credentials (DO NOT COMMIT)
+.env
+backend_env.json
+.azure/
+.azure_old/

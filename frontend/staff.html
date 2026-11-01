@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DocChain — Staff Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:,">
+
+  <style>
+    .filters {
+      margin: 1rem 0;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .filters input, .filters select, .filters button {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.9rem;
+    }
+    textarea#recipient {
+      width: 100%;
+      height: 60px;
+    }
+
+    /* 🔹 Theme-aware body and panels */
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+    .staff-box, .upload-panel, .last-upload, .letters-panel, .verify-box {
+      background: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 1rem 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* 🔹 Verify Widget Styling */
+    .verify-box h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+    .verify-box button {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      background: #1e93ab;
+      color: white;
+      cursor: pointer;
+    }
+    .verify-box button:hover {
+      background: #15768a;
+    }
+    .verify-box video {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: none;
+    }
+    .verify-box input[type="file"] {
+      padding: 0.3rem;
+    }
+
+    /* 🔹 Theme toggle button */
+    #themeToggle {
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="staff-wrapper">
+      <section class="staff-box">
+        <header class="staff-header">
+          <h2>Staff Dashboard</h2>
+
+          <!-- 🔹 Hamburger (mobile only) -->
+          <button class="hamburger" id="hamburger">☰</button>
+
+          <!-- 🔹 Navigation actions -->
+          <nav class="staff-actions nav-menu" id="navMenu">
+            <div id="whoami"></div>
+            <button id="themeToggle">🌙 Dark Mode</button>
+            <button id="btnLogout">🚪 Logout</button>
+          </nav>
+        </header>
+
+        <!-- 🔹 Verify Widget -->
+        <div style="margin-top:1rem;">
+          <button id="openVerifyWidget">📷 Verify Letter</button>
+          <div id="verifyWidgetContainer" style="display:none;margin-top:1rem;"></div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-panel">
+          <h3>Upload Letter</h3>
+
+          <label>Recipient Emails (comma or newline separated)</label>
+          <textarea id="recipient" placeholder="alice@example.com, bob@example.com"></textarea>
+
+          <label>Note (optional)</label>
+          <textarea id="note" rows="2"></textarea>
+
+          <label>PDF File</label>
+          <input id="file" type="file" accept="application/pdf">
+
+          <label>Expiry</label>
+          <select id="expires_at">
+            <option value="7">7 days</option>
+            <option value="30" selected>30 days</option>
+            <option value="90">90 days</option>
+            <option value="custom">Custom Date</option>
+          </select>
+          <input type="date" id="custom_expiry" style="display:none;" />
+
+          <button id="btnUpload">Upload</button>
+          <div id="uploadResult"></div>
+        </div>
+
+        <!-- Last Upload Info -->
+        <div class="last-upload">
+          <h3>Last Upload</h3>
+          <div id="lastUploadBox">No upload yet.</div>
+        </div>
+
+        <!-- Sent Letters -->
+        <div class="letters-panel">
+          <h3>Sent Letters</h3>
+
+          <!-- 🔹 Filters -->
+          <div class="filters">
+            <input id="searchBox" type="text" placeholder="Search by ID, file, or recipient email" />
+            <select id="statusFilter">
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="expired">Expired</option>
+              <option value="revoked">Revoked</option>
+            </select>
+            <label>From: <input type="date" id="dateFrom"></label>
+            <label>To: <input type="date" id="dateTo"></label>
+            <button id="btnSearch">🔍 Search</button>
+            <button id="btnReset">Reset</button>
+          </div>
+
+          <div id="lettersTable">Loading…</div>
+          <div class="pagination">
+            <button id="prevPage">Prev</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage">Next</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 🔹 Global loading spinner -->
+  <div id="spinner" class="spinner hidden"></div>
+
+  <!-- ================= Scripts ================= -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/guard.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/vendor/qrcode.min.js"></script>
+  <script src="assets/js/staff.js"></script>
+
+  <!-- QR decoding library (required for verification) -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
+  <!-- Verify widget (camera + upload) -->
+  <script src="assets/js/verifyWidget.js"></script>
+  <script>
+    document.getElementById("openVerifyWidget").addEventListener("click", () => {
+      const box = document.getElementById("verifyWidgetContainer");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+      initVerifyWidget(box);
+    });
+  </script>
+
+  <!-- 🔹 Theme toggle script -->
+  <script>
+    (() => {
+      const btn = document.getElementById("themeToggle");
+      const root = document.documentElement;
+
+      if (localStorage.getItem("theme") === "light") {
+        root.setAttribute("data-theme", "light");
+        btn.textContent = "🌙 Dark Mode";
+      }
+
+      btn?.addEventListener("click", () => {
+        if (root.getAttribute("data-theme") === "light") {
+          root.removeAttribute("data-theme");
+          localStorage.setItem("theme", "dark");
+          btn.textContent = "☀️ Light Mode";
+        } else {
+          root.setAttribute("data-theme", "light");
+          localStorage.setItem("theme", "light");
+          btn.textContent = "🌙 Dark Mode";
+        }
+      });
+    })();
+  </script>
+
+  <!-- 🔹 Hamburger toggle -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const burger = document.getElementById("hamburger");
+      const menu = document.getElementById("navMenu");
+      if (burger && menu) {
+        burger.addEventListener("click", () => {
+          menu.classList.toggle("active");
+        });
+      }
+    });
+  </script>
+</body>
+</html>

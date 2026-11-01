@@ -1,0 +1,505 @@
+/* ==========================================================================
+   DocChain — Modern Glassmorphism & High-Aesthetics UI Theme
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ---------- Core Theme (Modern Dark First) ---------- */
+  --color-bg: #080f19;
+  --color-bg-gradient: radial-gradient(circle at 50% 0%, #152542 0%, #080f19 100%);
+  --color-panel: rgba(21, 32, 54, 0.6);      /* semi-transparent glass panel */
+  --color-panel-solid: #152036;
+  --color-text: #e2e8f0;       /* bright off-white text */
+  --color-text-muted: #94a3b8; /* muted slate text */
+  --color-heading: #ffffff;    /* clean white headings */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-focus: #00d2d3;
+
+  /* ---------- Colors & Gradients ---------- */
+  --color-primary: #0f172a;
+  --color-accent: #00d2d3;     /* bright cyan accent */
+  --gradient-accent: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  --gradient-btn: linear-gradient(135deg, #00b894 0%, #00d2d3 100%);
+  --gradient-btn-hover: linear-gradient(135deg, #00d2d3 0%, #00f2fe 100%);
+
+  /* ---------- Status Colors ---------- */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* ---------- Effects ---------- */
+  --glass-blur: blur(16px);
+  --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --border-radius: 16px;
+}
+
+/* ---------- Light Mode Toggle Override ---------- */
+[data-theme="light"] {
+  --color-bg: #f8fafc;
+  --color-bg-gradient: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 100%);
+  --color-panel: rgba(255, 255, 255, 0.7);
+  --color-panel-solid: #ffffff;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-heading: #0f172a;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-focus: #3b82f6;
+  --color-accent: #3b82f6;
+  --gradient-btn: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --gradient-btn-hover: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --shadow-main: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================
+   Base Elements
+   ========================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  background-image: var(--color-bg-gradient);
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Outfit', sans-serif;
+  color: var(--color-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: 2.2rem; margin-bottom: 1.5rem; }
+h2 { font-size: 1.8rem; margin-bottom: 1.2rem; }
+h3 { font-size: 1.3rem; margin-bottom: 1rem; }
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+a:hover {
+  text-decoration: none;
+  filter: brightness(1.2);
+}
+
+/* ==========================================
+   Components: Glass Cards
+   ========================================== */
+.login-wrapper, .signup-wrapper,
+.staff-wrapper, .recipient-wrapper,
+.admin-wrapper {
+  background: var(--color-panel);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  max-width: 1000px;
+  margin: 4vh auto;
+  box-shadow: var(--shadow-main);
+  padding: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+.login-box, .signup-box,
+.staff-box, .recipient-box,
+.admin-box {
+  background: transparent;
+  width: 100%;
+  box-shadow: none;
+  padding: 0;
+}
+
+.upload-panel, .letters-panel,
+.last-upload, .admin-panel, .verify-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.3);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .upload-panel, 
+[data-theme="light"] .letters-panel,
+[data-theme="light"] .last-upload, 
+[data-theme="light"] .admin-panel, 
+[data-theme="light"] .verify-box {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+/* ==========================================
+   Inputs & Forms
+   ========================================== */
+label {
+  display: block;
+  margin: 1rem 0 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: 1rem;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] input, 
+[data-theme="light"] select, 
+[data-theme="light"] textarea {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--color-text);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(0, 210, 211, 0.15);
+}
+
+input[type="file"] {
+  background: rgba(15, 23, 42, 0.2);
+  padding: 0.6rem;
+  cursor: pointer;
+}
+
+/* ==========================================
+   Buttons
+   ========================================== */
+button, .btn {
+  background: var(--gradient-btn);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
+}
+
+button:hover, .btn:hover {
+  background: var(--gradient-btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 210, 211, 0.35);
+}
+
+button:active, .btn:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+#btnStopCamera {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+#btnStopCamera:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+}
+
+/* ==========================================
+   Header and Actions
+   ========================================== */
+.staff-header, .recipient-header, .admin-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.staff-actions, .recipient-actions, .admin-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+#whoami {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  background: rgba(255,255,255,0.05);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+}
+
+/* ==========================================
+   Tables
+   ========================================== */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(15, 23, 42, 0.2);
+  min-width: 800px;
+}
+
+[data-theme="light"] table {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+th, td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  background: rgba(15, 23, 42, 0.4);
+}
+
+[data-theme="light"] th {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="light"] tr:hover td {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+/* ==========================================
+   Status Badges
+   ========================================== */
+.badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  text-shadow: none;
+}
+
+.badge.active {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge.revoked {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badge.expired {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* ==========================================
+   Modals
+   ========================================== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(5, 8, 16, 0.85);
+  backdrop-filter: blur(12px);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: var(--color-panel-solid);
+  border: 1px solid var(--color-border);
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.close {
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+.close:hover { color: #fff; }
+
+/* ==========================================
+   Toast Notification Box
+   ========================================== */
+#toastBox div {
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ==========================================
+   Verify Widget Panel
+   ========================================== */
+.verify-box h3 {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+.verify-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ==========================================
+   Responsive Improvements
+   ========================================== */
+/* Hamburger style (hidden on desktop) */
+.hamburger {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .login-wrapper, .signup-wrapper, .staff-wrapper, .recipient-wrapper, .admin-wrapper {
+    padding: 1.5rem;
+    margin: 2vh 1rem;
+  }
+  
+  .staff-header, .recipient-header, .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    position: relative;
+  }
+  
+  .hamburger {
+    display: block !important;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-size: 1.5rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    align-self: flex-end;
+  }
+  
+  .nav-menu {
+    display: none !important;
+    width: 100%;
+  }
+  
+  .nav-menu.active {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 0.5rem;
+  }
+  
+  .staff-actions, .recipient-actions, .admin-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  button, .btn {
+    width: 100%;
+  }
+}
+
+/* Custom design tweak for hidden boxes */
+#openVerify, #verify-box {
+  display: none !important;
+}
+
+/* Spinner adjustment */
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top: 4px solid var(--color-accent);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 0.8s linear infinite;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Hide export logs per project request */
+#btnExportLogs {
+  display: none !important;
+}

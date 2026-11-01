@@ -1,0 +1,19 @@
+{
+  "PROJECT_NAME": "docchain",
+  "ENV": "dev",
+  "DATABASE_URL": "postgresql+psycopg2://user:password@localhost:5432/docchain_db",
+  "JWT_SECRET": "your_super_secret_jwt_key_here",
+  "AZURE_STORAGE_ACCOUNT": "your_storage_account_name",
+  "AZURE_STORAGE_CONTAINER": "letters",
+  "AZURE_STORAGE_CONN_STR": "DefaultEndpointsProtocol=https;AccountName=your_storage_account;AccountKey=your_key;EndpointSuffix=core.windows.net",
+  "AES_KEY_B64": "your_base64_encoded_aes_key",
+  "SMTP_HOST": "smtp.gmail.com",
+  "SMTP_PORT": "587",
+  "SMTP_USER": "your_email@gmail.com",
+  "SMTP_PASS": "your_app_specific_password",
+  "EMAIL_FROM": "your_email@gmail.com",
+  "OTP_EXP_MIN": "10",
+  "JWT_EXPIRES_MIN": "180",
+  "API_BASE": "http://localhost:8000",
+  "APP_BASE_URL": "http://localhost:8000"
+}

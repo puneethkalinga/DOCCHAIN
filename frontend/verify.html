@@ -1,0 +1,103 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DocChain — Verify Letter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:,">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .verify-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    .status {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+    .active { color: green; }
+    .revoked { color: red; }
+    .expired { color: orange; }
+    .invalid { color: gray; }
+    input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    video {
+      width: 100%;
+      max-height: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    hr { margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <div class="verify-box">
+    <h2>Letter Verification</h2>
+
+    <!-- Loading / messages -->
+    <p id="loading">Scan a QR code to verify</p>
+
+    <!-- QR upload -->
+    <div id="qrUploadBox">
+      <label for="qrUpload">Upload QR Code Image</label>
+      <input type="file" id="qrUpload" accept="image/*">
+    </div>
+
+    <hr>
+
+    <!-- Camera scanning -->
+    <div id="cameraBox">
+      <button id="startCamera">📷 Start Camera Scan</button>
+      <video id="video" autoplay muted playsinline class="hidden"></video>
+    </div>
+
+    <!-- Results -->
+    <div id="result" class="hidden" style="margin-top:20px">
+      <p class="status" id="status"></p>
+      <div id="meta" class="hidden">
+        <p><strong>Letter ID:</strong> <span id="letterId"></span></p>
+        <p><strong>Sender:</strong> <span id="sender"></span></p>
+        <p><strong>Created At:</strong> <span id="createdAt"></span></p>
+        <p><strong>Expires At:</strong> <span id="expiresAt"></span></p>
+        <p><strong>Hash Prefix:</strong> <span id="hash"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR decoding library -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <!-- Verification logic -->
+  <script src="assets/js/verify.js"></script>
+</body>
+</html>

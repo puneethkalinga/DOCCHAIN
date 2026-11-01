@@ -1,0 +1,118 @@
+Got it 👍 — let’s take the original workflow from your abstract and mark each item as:
+
+✅ Done (demo-ready with Neon)
+
+🔜 Pending for production
+
+❌ Not applicable / replaced
+
+📌 DocChain Workflow (with Status)
+1. Frontend
+
+ReactJS or HTML-CSS-JS web app → ✅ Done (HTML-JS pages, role-based dashboards for staff/recipient, login/logout).
+
+Staff upload UI → 🔜 Needs polish.
+
+Admin UI for logs/users → 🔜 Not implemented yet.
+
+Recipient dashboard (letters + download) → ✅ Done (list, single download; “download all” still demo mode).
+
+2. Backend
+
+Python API (FastAPI instead of Flask) → ✅ Done (all core endpoints: auth, letters, verification, logs).
+
+Role-based access (admin/staff/recipient) → ✅ Done (JWT + redirect).
+
+Health/config endpoints → ✅ Done (/healthz_docchain, /config).
+
+Refresh tokens & rate limiting → 🔜 Pending (production hardening).
+
+3. Authentication
+
+Azure AD B2C → ❌ Not used (student subscription blocked).
+
+Plan B: Azure AD (single-tenant Entra ID) with MFA → 🔜 Partially done (local OTP working, MFA toggle exists; real Azure AD MFA not integrated yet).
+
+Enforce MFA (staff/admin) → 🔜 Pending.
+
+Optional MFA (recipients) → 🔜 Pending.
+
+4. Database
+
+Azure SQL Database → ❌ Replaced with Neon Postgres.
+
+DB models (User, Letter, VerificationToken, AccessLog) → ✅ Done.
+
+Schema creation with Base.metadata.create_all() → ✅ Done (demo).
+
+Alembic migrations (production) → 🔜 Not done.
+
+DB hardening (TLS only, IP restrictions, role separation) → 🔜 Not done.
+
+5. File Storage
+
+Azure Blob Storage → ✅ Done (connected, letters encrypted before upload).
+
+AES-GCM encryption (IV + tag) → ✅ Done.
+
+SHA-256 integrity check → ✅ Done.
+
+Blob access logs to admin → 🔜 Not wired to UI yet.
+
+6. Security / Secrets
+
+Azure Key Vault → 🔜 Not used (secrets still in .env).
+
+Move DATABASE_URL, AES_KEY_B64, JWT_SECRET to Key Vault → 🔜 Pending.
+
+Rate limiting / login lockout → 🔜 Pending.
+
+7. Containerization & Deployment
+
+Dockerize backend (FastAPI) → 🔜 Not done.
+
+Dockerize frontend → 🔜 Not done.
+
+Push to Azure Container Registry (ACR) → 🔜 Not done.
+
+Deploy to Azure App Service / AKS → 🔜 Not done.
+
+Frontend hosting (Azure Static Web Apps / App Service) → 🔜 Not done.
+
+Staging vs production environments → 🔜 Not set up.
+
+8. Monitoring & Logs
+
+AccessLog table → ✅ Done (DB records).
+
+Admin log viewer UI → 🔜 Not built.
+
+Azure Monitor / App Insights → 🔜 Not integrated.
+
+Real-time alerts (Logic Apps) → 🔜 Optional, not done.
+
+9. Verification & Tracking
+
+Document hash generation (SHA-256) → ✅ Done.
+
+Verification link (recipient portal) → ✅ Done.
+
+QR code / blockchain extension → 🔜 Optional, not implemented.
+
+Document access timestamp logging → ✅ Done.
+
+10. DevOps / CI-CD
+
+GitHub Actions pipeline → 🔜 Not created.
+
+Azure Webhook deployment → 🔜 Not configured.
+
+Automated tests → 🔜 Not integrated.
+
+✅ Summary:
+
+Done: Core backend, Neon DB, encryption + Blob, recipient/staff login, dashboards, logs, demo-ready flow.
+
+Pending (Cloud): Alembic migrations, Key Vault, real MFA with Azure AD, Docker + ACR + App Service, CI/CD pipeline, monitoring, admin UI.
+
+❌ Replaced: Azure SQL DB → Neon Postgres; Azure AD B2C → Azure AD single-tenant.

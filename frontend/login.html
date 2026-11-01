@@ -1,0 +1,209 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DocChain — Login</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:,">
+  <style>
+    /* Hide the verify feature completely (text + box) */
+    #openVerify,
+    #verify-box {
+      display: none !important;
+    }
+
+    /* Verify box styling (kept for structure) */
+    #verify-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: var(--card-bg, #f8f8f8);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    #verify-box input[type="file"], #verify-box input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    #verify-box button {
+      padding: 0.5rem 1rem;
+      margin-top: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      background: #1e93ab;
+      color: white;
+      cursor: pointer;
+    }
+    #verify-box button:hover {
+      background: #15768a;
+    }
+    #verifyResult {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+    video {
+      width: 100%;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="login-wrapper">
+      <section class="login-box">
+        <h2>Login</h2>
+        <div id="step1">
+          <form id="login-form">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Login</button>
+          </form>
+
+          <div class="note">
+            New here? <a href="signup.html">Create an account</a>
+          </div>
+
+          <!-- Verify Letter toggle (kept hidden) -->
+          <div class="note" style="display:none;">
+            <a href="#" id="openVerify">Hidden Verify Link</a>
+          </div>
+
+          <!-- Hidden verify box -->
+          <div id="verify-box">
+            <h3>Letter Verification</h3>
+
+            <label>Upload QR Code</label>
+            <input id="qrUpload" type="file" accept="image/*">
+
+            <button id="startCamera">Start Camera Scan</button>
+            <video id="video" autoplay muted playsinline></video>
+
+            <div id="verifyResult"></div>
+          </div>
+        </div>
+
+        <div id="step2" style="display:none;margin-top:16px">
+          <label for="otp">Enter OTP</label>
+          <input id="otp" type="text">
+          <button id="btnOtp">Verify OTP</button>
+          <div class="note">Check console or your OTP channel.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="spinner" class="spinner hidden"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/login.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
+  <script>
+    // Verify logic (kept for future reactivation)
+    const openVerify = document.getElementById("openVerify");
+    const verifyBox = document.getElementById("verify-box");
+    const videoEl = document.getElementById("video");
+    const qrUpload = document.getElementById("qrUpload");
+    const resultBox = document.getElementById("verifyResult");
+    const API_BASE = window.DOCCHAIN_API || "http://127.0.0.1:8000";
+
+    if (openVerify) {
+      openVerify.addEventListener("click", (e) => {
+        e.preventDefault();
+        verifyBox.style.display =
+          verifyBox.style.display === "none" ? "block" : "none";
+      });
+    }
+
+    async function doVerify(token) {
+      if (!token) return (resultBox.textContent = "Invalid or empty token");
+      resultBox.textContent = "Verifying...";
+      try {
+        const res = await fetch(`${API_BASE}/letters/verify/${encodeURIComponent(token)}`);
+        const data = await res.json();
+        if (data.valid) {
+          resultBox.innerHTML = `<p style="color:green;">Active Letter</p>
+            <p><b>Letter ID:</b> ${data.letter_id}</p>
+            <p><b>Sender:</b> ${data.sender}</p>
+            <p><b>Created:</b> ${new Date(data.created_at).toLocaleString()}</p>`;
+        } else {
+          resultBox.innerHTML = `<p style="color:red;">${data.status?.toUpperCase() || "INVALID"}</p>`;
+        }
+      } catch {
+        resultBox.textContent = "Verification failed or network error.";
+      }
+    }
+
+    if (qrUpload) {
+      qrUpload.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, canvas.width, canvas.height);
+          if (code) {
+            const tokenMatch = code.data.match(/token=([^&]+)/);
+            doVerify(tokenMatch ? tokenMatch[1] : code.data);
+          } else {
+            resultBox.textContent = "Could not decode QR.";
+          }
+        };
+      });
+    }
+
+    const startCamBtn = document.getElementById("startCamera");
+    if (startCamBtn) {
+      startCamBtn.addEventListener("click", async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+          videoEl.srcObject = stream;
+          videoEl.style.display = "block";
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          const scan = () => {
+            if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
+              canvas.width = videoEl.videoWidth;
+              canvas.height = videoEl.videoHeight;
+              ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const code = jsQR(imageData.data, canvas.width, canvas.height);
+              if (code) {
+                const tokenMatch = code.data.match(/token=([^&]+)/);
+                const token = tokenMatch ? tokenMatch[1] : code.data;
+                doVerify(token);
+                stream.getTracks().forEach((t) => t.stop());
+                videoEl.style.display = "none";
+                return;
+              }
+            }
+            requestAnimationFrame(scan);
+          };
+          requestAnimationFrame(scan);
+        } catch {
+          resultBox.textContent = "Camera not available or permission denied.";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

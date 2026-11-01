@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+storage/
+docs/
+infra/
+*.pdf
+*.docx
+*.zip
+*.dump
+*.bak
+*.tar.gz
